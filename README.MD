@@ -4,6 +4,6 @@ cassantpl is used for cassandra db release migration and cassandra dao code gene
 
 Please see the following README.
 
-./cassangen/README
-./cassanscript/README
+### ./cassangen/README
+### ./cassanscript/README
 
