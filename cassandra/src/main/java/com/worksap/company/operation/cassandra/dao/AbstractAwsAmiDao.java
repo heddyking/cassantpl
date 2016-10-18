@@ -1,0 +1,538 @@
+package com.worksap.company.operation.cassandra.dao;
+
+import com.datastax.driver.core.*;
+import com.datastax.driver.core.querybuilder.*;
+import com.datastax.driver.mapping.*;
+import java.util.concurrent.Future;
+import com.google.common.base.Function;
+import com.google.common.util.concurrent.*;
+import com.worksap.company.operation.cassandra.dto.AwsAmiDto;
+import com.worksap.company.operation.cassandra.table.AwsAmiTable;
+import javafx.util.Pair;
+import java.util.*;
+import java.math.*;
+import java.net.*;
+import java.nio.*;
+
+/**
+ * @generated 
+ */
+public abstract class AbstractAwsAmiDao {
+
+    protected final Session session;
+
+    protected final Future<Session> sessionAsync;
+
+    protected final MappingManager manager;
+
+    protected final Mapper<AwsAmiDto> mapper;
+
+    public AbstractAwsAmiDao(Session session, Future<Session> sessionAsync, MappingManager manager) {
+        this.session = session;
+        this.sessionAsync = sessionAsync;
+        this.manager = manager;
+        this.mapper = manager.mapper(AwsAmiDto.class);
+    }
+
+    /**
+     * save dto synchronously
+     * @param dto
+     */
+    public void save(AwsAmiDto dto) {
+        mapper.save(dto);
+    }
+
+    /**
+     * save dto asynchronously
+     * @param dto
+     */
+    public Future<Void> saveAsync(AwsAmiDto dto) {
+        return mapper.saveAsync(dto);
+    }
+
+    /**
+     * get dto by pk synchronously
+     * @param {primarykeys}
+     */
+    public AwsAmiDto get(String awsAccessKey, String region, String amiId) {
+        return mapper.get(awsAccessKey, region, amiId);
+    }
+
+    /**
+     * get dto by pk asynchronously
+     * @param {primarykeys}
+     */
+    public Future<AwsAmiDto> getAsync(String awsAccessKey, String region, String amiId) {
+        return mapper.getAsync(awsAccessKey, region, amiId);
+    }
+
+    /**
+     * delete by pk synchronously
+     * @param {primarykeys}
+     */
+    public void delete(String awsAccessKey, String region, String amiId) {
+        mapper.delete(awsAccessKey, region, amiId);
+    }
+
+    /**
+     * delete by pk asynchronously
+     * @param {primarykeys}
+     */
+    public Future<Void> deleteAsync(String awsAccessKey, String region, String amiId) {
+        return mapper.deleteAsync(awsAccessKey, region, amiId);
+    }
+
+    /**
+     * delete dto synchronously
+     * @param dto
+     */
+    public void delete(AwsAmiDto dto) {
+        mapper.delete(dto);
+    }
+
+    /**
+     * delete dto asynchronously
+     * @param dto
+     */
+    public Future<Void> deleteAsync(AwsAmiDto dto) {
+        return mapper.deleteAsync(dto);
+    }
+
+    /**
+     * save dtos in an atomic batch synchronously
+     * @param list
+     */
+    public void saveBatch(List<AwsAmiDto> list) {
+        BatchStatement batch = new BatchStatement();
+        list.stream().forEach(dto -> batch.add(mapper.saveQuery(dto)));
+        session.execute(batch);
+    }
+
+    /**
+     * save dtos in an atomic batch asynchronously
+     * @param list
+     */
+    public Future<Void> saveBatchAsync(List<AwsAmiDto> list) {
+        BatchStatement batch = new BatchStatement();
+        list.stream().forEach(dto -> batch.add(mapper.saveQuery(dto)));
+        return Futures.transform(session.executeAsync(batch),
+                (Function<ResultSet, Void>) rs -> null);
+    }
+
+    /**
+     * save dto synchronized in a light-weighted transaction way
+     * @param dto
+     * @return
+     */
+    public boolean saveLwt(AwsAmiDto dto){
+        Statement query = QueryBuilder.insertInto(AwsAmiTable._NAME)
+                .value(AwsAmiTable.AWS_ACCESS_KEY, dto.getAwsAccessKey())
+                .value(AwsAmiTable.REGION, dto.getRegion())
+                .value(AwsAmiTable.AMI_ID, dto.getAmiId())
+                .value(AwsAmiTable.AMI_NAME, dto.getAmiName())
+                .value(AwsAmiTable.BLOCK_DEVICES, dto.getBlockDevices())
+                .value(AwsAmiTable.CREATION_DATA, dto.getCreationData())
+                .value(AwsAmiTable.DESCRIPTION, dto.getDescription())
+                .value(AwsAmiTable.IMAGE_SIZE, dto.getImageSize())
+                .value(AwsAmiTable.PLATFORM, dto.getPlatform())
+                .value(AwsAmiTable.ROOT_DEVICE_NAME, dto.getRootDeviceName())
+                .value(AwsAmiTable.ROOT_DEVICE_TYPE, dto.getRootDeviceType())
+                .value(AwsAmiTable.STATUS, dto.getStatus())
+                .value(AwsAmiTable.VIRTUALIZATION, dto.getVirtualization())
+                .ifNotExists()
+                ;
+        ResultSet rs= session.execute(query);
+        return rs.one().getBool("[applied]");
+    }
+
+    /**
+     * save dto asynchronized in a light-weighted transaction way
+     * @param dto
+     * @return
+     */
+    public Future<Boolean> saveLwtAsync(AwsAmiDto dto){
+        Statement query = QueryBuilder.insertInto(AwsAmiTable._NAME)
+                .value(AwsAmiTable.AWS_ACCESS_KEY, dto.getAwsAccessKey())
+                .value(AwsAmiTable.REGION, dto.getRegion())
+                .value(AwsAmiTable.AMI_ID, dto.getAmiId())
+                .value(AwsAmiTable.AMI_NAME, dto.getAmiName())
+                .value(AwsAmiTable.BLOCK_DEVICES, dto.getBlockDevices())
+                .value(AwsAmiTable.CREATION_DATA, dto.getCreationData())
+                .value(AwsAmiTable.DESCRIPTION, dto.getDescription())
+                .value(AwsAmiTable.IMAGE_SIZE, dto.getImageSize())
+                .value(AwsAmiTable.PLATFORM, dto.getPlatform())
+                .value(AwsAmiTable.ROOT_DEVICE_NAME, dto.getRootDeviceName())
+                .value(AwsAmiTable.ROOT_DEVICE_TYPE, dto.getRootDeviceType())
+                .value(AwsAmiTable.STATUS, dto.getStatus())
+                .value(AwsAmiTable.VIRTUALIZATION, dto.getVirtualization())
+                .ifNotExists()
+                ;
+        return Futures.transform(session.executeAsync(query),
+                (Function<ResultSet, Boolean>) rs -> rs.one().getBool("[applied]"));
+    }
+
+    /**
+     * get all records synchronously
+     */
+    public List<AwsAmiDto> getAll() {
+        Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME);
+        return mapper.map(session.execute(query)).all();
+    }
+
+    /**
+     * get all records asynchronously
+     */
+    public Future<List<AwsAmiDto>> getAllAsync() {
+        Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME);
+        Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+        return transferFutureResultSet(futureResultSet);
+    }
+
+    /**
+     * get records by partition key synchronously
+     * @param {partition keys}
+     */
+    public List<AwsAmiDto> getByPk(/*partition key*/ String awsAccessKey) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+				.where(QueryBuilder.eq(AwsAmiTable.AWS_ACCESS_KEY,awsAccessKey))
+				;
+		return mapper.map(session.execute(query)).all();
+	}
+
+	/**
+     * get records by partition key asynchronously
+     * @param {partition keys}
+     */
+    public Future<List<AwsAmiDto>> getByPkAsync(/*partition key*/ String awsAccessKey) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+				.where(QueryBuilder.eq(AwsAmiTable.AWS_ACCESS_KEY,awsAccessKey))
+				;
+		Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+        return transferFutureResultSet(futureResultSet);
+	}
+
+	/**
+     * get records by partition key and clustering keys synchronously
+     * @param {partition keys}
+     */
+    public List<AwsAmiDto> getByPkCk1(/*partition key*/ String awsAccessKey
+	                              /*clustering key*/ , String region) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+				.where(QueryBuilder.eq(AwsAmiTable.AWS_ACCESS_KEY,awsAccessKey))
+				.and(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				;
+		return mapper.map(session.execute(query)).all();
+	}
+
+	/**
+     * get records by partition key and clustering keys asynchronously
+     * @param {partition keys}
+     */
+    public Future<List<AwsAmiDto>> getByPkCk1Async(/*partition key*/ String awsAccessKey
+	                            /*clustering key*/ , String region) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+				.where(QueryBuilder.eq(AwsAmiTable.AWS_ACCESS_KEY,awsAccessKey))
+				.and(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				;
+		Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+        return transferFutureResultSet(futureResultSet);
+	}
+
+	/**
+     * get records by clustering keys synchronously
+     * @param {partition keys}
+     */
+    public List<AwsAmiDto> getByCk1(/*clustering key*/ String region) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+                .allowFiltering()
+				.where(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				;
+		return mapper.map(session.execute(query)).all();
+	}
+
+	/**
+     * get records by clustering keys asynchronously
+     * @param {partition keys}
+     */
+    public Future<List<AwsAmiDto>> getByCk1Async(/*clustering key*/ String region) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+                .allowFiltering()
+				.where(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				;
+		Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+        return transferFutureResultSet(futureResultSet);
+	}
+
+	/**
+     * get records by partition key and clustering keys synchronously
+     * @param {partition keys}
+     */
+    public List<AwsAmiDto> getByPkCk2(/*partition key*/ String awsAccessKey
+	                              /*clustering key*/ , String region, String amiId) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+				.where(QueryBuilder.eq(AwsAmiTable.AWS_ACCESS_KEY,awsAccessKey))
+				.and(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				.and(QueryBuilder.eq(AwsAmiTable.AMI_ID,amiId))
+				;
+		return mapper.map(session.execute(query)).all();
+	}
+
+	/**
+     * get records by partition key and clustering keys asynchronously
+     * @param {partition keys}
+     */
+    public Future<List<AwsAmiDto>> getByPkCk2Async(/*partition key*/ String awsAccessKey
+	                            /*clustering key*/ , String region, String amiId) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+				.where(QueryBuilder.eq(AwsAmiTable.AWS_ACCESS_KEY,awsAccessKey))
+				.and(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				.and(QueryBuilder.eq(AwsAmiTable.AMI_ID,amiId))
+				;
+		Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+        return transferFutureResultSet(futureResultSet);
+	}
+
+	/**
+     * get records by clustering keys synchronously
+     * @param {partition keys}
+     */
+    public List<AwsAmiDto> getByCk2(/*clustering key*/ String region, String amiId) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+                .allowFiltering()
+				.where(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				.and(QueryBuilder.eq(AwsAmiTable.AMI_ID,amiId))
+				;
+		return mapper.map(session.execute(query)).all();
+	}
+
+	/**
+     * get records by clustering keys asynchronously
+     * @param {partition keys}
+     */
+    public Future<List<AwsAmiDto>> getByCk2Async(/*clustering key*/ String region, String amiId) {
+	    Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME)
+                .allowFiltering()
+				.where(QueryBuilder.eq(AwsAmiTable.REGION,region))
+				.and(QueryBuilder.eq(AwsAmiTable.AMI_ID,amiId))
+				;
+		Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+        return transferFutureResultSet(futureResultSet);
+	}
+
+    /**
+     * get next page and new pagestate synchronously
+     * @param size
+     * @param pagingState
+     */
+    public Pair<PagingState,List<AwsAmiDto>> getNextPage(Integer size, Optional<String> pagingState) {
+        Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME);
+        return queryNextPage(size, pagingState, query);
+    }
+
+    /**
+     * query next page and new pagestate synchronously
+     * @param size
+     * @param pagingState
+     * @param query
+     */
+    protected Pair<PagingState,List<AwsAmiDto>> queryNextPage(
+            Integer size, Optional<String> pagingState, Statement query) {
+        query.setFetchSize(size);
+        if (pagingState.isPresent()) {
+            query.setPagingState(PagingState.fromString(pagingState.get()));
+        }
+
+        ResultSet rs = session.execute(query);
+
+        Result<AwsAmiDto> results = mapper.map(rs);
+        PagingState newPagingState = results.getExecutionInfo().getPagingState();
+        List<AwsAmiDto> resultList = new ArrayList<AwsAmiDto>();
+        for (AwsAmiDto dto : results) {
+            resultList.add(dto);
+            if (results.getAvailableWithoutFetching() == 0) {
+                break;
+            }
+        }
+        return new Pair<PagingState, List<AwsAmiDto>>(newPagingState,resultList);
+    }
+
+    /**
+     * get next page and new pagestate asynchronously
+     * @param size
+     * @param pagingState
+     */
+    public Future<Pair<PagingState,List<AwsAmiDto>>> getNextPageAsync(
+            Integer size, Optional<String> pagingState) {
+        Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME);
+        return queryNextPageAsync(size, pagingState, query);
+    }
+
+    /**
+     * query next page and new pagestate asynchronously
+     * @param size
+     * @param pagingState
+     * @param query
+     */
+    protected Future<Pair<PagingState,List<AwsAmiDto>>> queryNextPageAsync(
+            Integer size, Optional<String> pagingState, Statement query) {
+        query.setFetchSize(size);
+        if (pagingState.isPresent()) {
+            query.setPagingState(PagingState.fromString(pagingState.get()));
+        }
+
+        Future<ResultSet> futureResultSet = Futures.transform((ListenableFuture<Session>)sessionAsync,
+                (AsyncFunction<Session, ResultSet>) session -> session.executeAsync(query));
+
+        return transferFutureResultSetWithState(futureResultSet);
+    }
+
+    /**
+     * get a certain page asynchronously
+     * @param size
+     * @param page
+     */
+    public Future<Pair<PagingState,List<AwsAmiDto>>> getCertainPageAsync(Integer size, Integer page) {
+        Statement query = QueryBuilder
+                .select()
+                .all()
+                .from(AwsAmiTable._NAME);
+        return queryCertainPageAsync(size,page,query);
+    }
+
+    /**
+     * query a certain page asynchronously
+     * @param size
+     * @param page
+     * @param query
+     */
+    protected Future<Pair<PagingState,List<AwsAmiDto>>> queryCertainPageAsync(
+            Integer size, Integer page, Statement query) {
+        //async paging
+        query.setFetchSize(size);
+        Future<ResultSet> futureResultSet = Futures.transform(session.executeAsync(query), pageIterate(page));
+
+        return transferFutureResultSetWithState(futureResultSet);
+    }
+
+    /**
+     * transfer future<resultset> to future<list<dto>>
+     * @param futureResultSet
+     */
+    protected Future<List<AwsAmiDto>> transferFutureResultSet(
+            Future<ResultSet> futureResultSet) {
+        Future<List<AwsAmiDto>> futureResutlList = Futures.transform((ListenableFuture<ResultSet>)futureResultSet,
+                (Function<ResultSet, List<AwsAmiDto>>) rs -> {
+                    Result<AwsAmiDto> results = mapper.map(rs);
+                    PagingState newPagingState = results.getExecutionInfo().getPagingState();
+                    List<AwsAmiDto> resultList = new ArrayList<AwsAmiDto>();
+                    for (AwsAmiDto dto : results) {
+                        resultList.add(dto);
+                        if (results.getAvailableWithoutFetching() == 0) {
+                            break;
+                        }
+                    }
+                    return resultList;
+                });
+        return futureResutlList;
+    }
+
+    /**
+     * transfer future<resultset> to future<pair<pagingstate,list<dto>>>
+     * @param futureResultSet
+     */
+    protected Future<Pair<PagingState,List<AwsAmiDto>>> transferFutureResultSetWithState(
+            Future<ResultSet> futureResultSet) {
+        Future<Pair<PagingState,List<AwsAmiDto>>> futureResutlList = Futures.transform((ListenableFuture<ResultSet>)futureResultSet,
+                (Function<ResultSet, Pair<PagingState,List<AwsAmiDto>>>) rs -> {
+                    Result<AwsAmiDto> results = mapper.map(rs);
+                    PagingState newPagingState = results.getExecutionInfo().getPagingState();
+                    List<AwsAmiDto> resultList = new ArrayList<AwsAmiDto>();
+                    for (AwsAmiDto dto : results) {
+                        resultList.add(dto);
+                        if (results.getAvailableWithoutFetching() == 0) {
+                            break;
+                        }
+                    }
+                    return new Pair<PagingState,List<AwsAmiDto>>(newPagingState,resultList);
+                });
+        return futureResutlList;
+    }
+
+    /**
+     * use resultset interate to a certain page.
+     * @param page
+     */
+    private AsyncFunction<ResultSet, ResultSet> pageIterate(final int page) {
+        return pageIterate(page, 1);
+    }
+
+    /**
+     * use resultset interate to a certain page.
+     * @param page
+     * @param cur
+     */
+    private AsyncFunction<ResultSet, ResultSet> pageIterate(final int page, int cur) {
+        return (AsyncFunction<ResultSet, ResultSet>) rs -> {
+            if (rs.getExecutionInfo().getPagingState() == null && cur < page) {
+                return Futures.immediateCancelledFuture();
+            } else if (cur == page) {
+                return Futures.immediateFuture(rs);
+            } else {
+                for (Row row : rs) {
+                    if (rs.getAvailableWithoutFetching() == 0) break;
+                }
+                Future<ResultSet> future = rs.fetchMoreResults();
+                return Futures.transform((ListenableFuture<ResultSet>)future, pageIterate(page, cur + 1));
+            }
+        };
+    }
+}
+

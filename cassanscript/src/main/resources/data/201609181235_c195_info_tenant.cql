@@ -1,0 +1,20 @@
+﻿INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid9','cid4','2018-03-01 20:00:00',0665a306-c2de-4e1d-b984-f5264d595351,{'ch':'ch_lcname9', 'en':'lcname9'},'2016-06-01 20:00:00',250,true,'taddr9','temail9','tname9','tphone9','ttype9');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid1','cid0','2018-03-01 20:00:00',3c0b464e-d310-41f4-b308-1acbb88c9c0f,{'ch':'ch_lcname1', 'en':'lcname1'},'2016-06-01 20:00:00',198,true,'taddr1','temail1','tname1','tphone1','ttype1');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid7','cid3','2018-04-01 20:00:00',1779ac64-d56d-4ca5-997c-eef1299366f7,{'ch':'ch_lcname7', 'en':'lcname7'},'2016-06-01 20:00:00',1749,true,'taddr7','temail7','tname7','tphone7','ttype7');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid0','cid0','2018-06-01 20:00:00',66d5daee-6d63-4cd6-9a3a-0bbe2e04d25b,{'ch':'ch_lcname0', 'en':'lcname0'},'2016-04-01 20:00:00',1448,true,'taddr0','temail0','tname0','tphone0','ttype0');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid6','cid3','2018-04-01 20:00:00',f5c6377b-6336-4063-99b2-a9f31abe26e5,{'ch':'ch_lcname6', 'en':'lcname6'},'2016-06-01 20:00:00',601,true,'taddr6','temail6','tname6','tphone6','ttype6');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid2','cid1','2018-05-01 20:00:00',988bf3fe-dc1f-442c-8469-bd9427195397,{'ch':'ch_lcname2', 'en':'lcname2'},'2016-04-01 20:00:00',497,true,'taddr2','temail2','tname2','tphone2','ttype2');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid3','cid1','2018-02-01 20:00:00',da697e25-377a-4d85-b131-cf55b23a3203,{'ch':'ch_lcname3', 'en':'lcname3'},'2016-07-01 20:00:00',1778,true,'taddr3','temail3','tname3','tphone3','ttype3');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid8','cid4','2018-08-01 20:00:00',951c7704-32b5-46c8-a030-70436cd810bb,{'ch':'ch_lcname8', 'en':'lcname8'},'2016-05-01 20:00:00',741,true,'taddr8','temail8','tname8','tphone8','ttype8');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid4','cid2','2018-08-01 20:00:00',22094c89-94e0-4ee5-96ef-07706fd3d45d,{'ch':'ch_lcname4', 'en':'lcname4'},'2016-11-01 20:00:00',42,true,'taddr4','temail4','tname4','tphone4','ttype4');
+INSERT INTO elephas.info_tenant (tenant_id,corporation_id,license_end_time,license_id,license_name,license_start_time,license_usernum,record_state,tenant_address,tenant_email,tenant_name,tenant_phone,tenant_type) VALUES (
+'tid5','cid2','2018-08-01 20:00:00',f78aecae-d3ec-46b2-888e-7f0a77d536da,{'ch':'ch_lcname5', 'en':'lcname5'},'2016-02-01 20:00:00',1656,true,'taddr5','temail5','tname5','tphone5','ttype5');

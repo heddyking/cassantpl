@@ -1,0 +1,59 @@
+## Synopsis
+
+**cassanscript** is used to record all the cql executed or need to be executed in DB. All of the scripts will be used the **cassangen** module, which provides a tool to compare the DB version with the cql scripts version and then run the cql update into DB.
+
+It mainly contains 2 big kinds of scripts:
+
+* **schema scripts**: the cql used to generate or update the DB's schema
+* **data scripts**: the cql used to generate or update the DB's data
+
+Each big kind can be clarify into 3 small kinds:
+
+* **global snapshot**: All the developer merge their code into develop branch. After the code freeze, we backup the latest DB schema and data into cql scripts. These kinds of backup scripts are called global snapshot.
+
+* **augment**: During the development, developers need to make some adjustment or update on DB. So they need to write the augment scripts.
+
+* **local snapshot**: If multiple developers develop one project with Cassandra DB. We suggest they use their local DB, rather than use the a centralized DB. A centralized DB may cause conflict, when they make changes on DB. Sometimes developers hope to backup their local DB. These kinds of backup cql called local snapshot.
+
+
+## Naming Principle
+
+Different kinds of scripts should use different naming principle:
+
+* **global snapshot**: {timestamp}.cql
+* **augment**: {timestamp}_{developer_id}\_{description}.cql
+* **local snapshot**: {timestamp}_{developer_id}.cql
+
+Examples:
+
+* If developers totally merge their code into develop branch. Then they backup the db schema and data into to cql scripts. It's time "2016-09-29 11:13". The cql scripts should be named with **201609291113.cql**  both for schema cql and data cql. 
+
+* If developer (id: c195) makes some changes on foobar table's columns. Developer c195 should add the update cql scripts. It's time  "2016-09-29 08:53". The cql scripts should be named with **201609291113_c195_foobarTableColumnUpdate.cql**
+
+* After developer (C195) develops on his local branch and local DB for several days, he hopes to backup his local DB.  The cql scripts should be named with **201609291113_c195.cql**.
+
+
+## Contributors
+
+Xiaoxi Wang
+Email: gkvoid@gmail.com
+
+
+## License
+
+cassanscript
+Copyright (C) 2016 Xiaoxi Wang
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+

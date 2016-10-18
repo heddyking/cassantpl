@@ -1,0 +1,1 @@
+alter table elephas.ami_meta_data drop public;
