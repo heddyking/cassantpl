@@ -16,10 +16,11 @@ import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.ttl;
+
 /**
  * Created by xiaoxi on 16-8-24.
  */
-
 public class CassandraDbUpdateUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(CassandraDbUpdateUtil.class);
@@ -60,6 +61,7 @@ public class CassandraDbUpdateUtil {
     private final static String MIGRATION_TS="migration_ts";
     private final static String GLOBAL_SNAPSHOT="global_snapshot"; //if use global snapshot, we set this as developer_id.
     private final static String SCRIPT_NAME_SEPARATOR="_";
+    private final static int TTL=200; //after 3min20seconds, record will expired.
 
     //cql
     private final static String KEYSPACE_CQL="CREATE KEYSPACE IF NOT EXISTS db_migration WITH replication = " +
@@ -68,7 +70,6 @@ public class CassandraDbUpdateUtil {
             "type varchar, developer_id varchar, current_ts varchar, PRIMARY KEY (ptk, type, developer_id));";
     private final static String MUTEX_TABLE_CQL="create table if not exists db_migration.db_mutex(ptk varchar, " +
             "migration_id varchar, migration_ts timeuuid, PRIMARY KEY (ptk, migration_id, migration_ts));";
-    private final static String RELEASE_MUTEX_CQL="delete from db_migration.db_mutex where ptk='dummy' and migration_id=";
     private final static String RELEASE_ALL_MUTEX_CQL="drop table if exists db_migration.db_mutex";
 
     //temp variables
@@ -85,10 +86,9 @@ public class CassandraDbUpdateUtil {
     private static String[] dataCqls=new String[]{};
 
     //init constaints
-//    private static String migration_id=Thread.currentThread().getContextClassLoader().getResource("").getPath();
-    private static String migration_id="heheheeheheh";
-    private static UUID migration_ts= Generators.timeBasedGenerator().generate();
-    private enum KIND_OF_SCRIPT {
+    private static String migration_id=Thread.currentThread().getContextClassLoader().getResource("").getPath(); //the unique id for this kind of migration action
+    private static UUID migration_ts= Generators.timeBasedGenerator().generate(); //the unique id for this time of the migration
+    private enum KIND_OF_SCRIPT { //kinds of the cql scripts
         GLOBAL_SNAPSHOT,
         LOCAL_SNAPSHOT,
         LOCAL_AUGMENT
@@ -116,22 +116,6 @@ public class CassandraDbUpdateUtil {
     public static void destory(){
         if(session!=null)
             session.getCluster().close();
-
-////        relase lock with a background daemon to avoid release lock exception
-//        try {
-//            Thread.sleep(10000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        if(session==null)
-//            session = Cluster.builder()
-//                    .withClusterName(CLUSTER_NAME)
-//                    .addContactPoint(CONTACT_POINTS)
-//                    .build().connect();
-//        session.execute(RELEASE_MUTEX_CQL+"'"+migration_id+"'");
-//        if(session!=null)
-//            session.getCluster().close();
     }
 
     /**
@@ -145,6 +129,7 @@ public class CassandraDbUpdateUtil {
                     .build().connect();
         session.execute(RELEASE_ALL_MUTEX_CQL);
         session.execute(MUTEX_TABLE_CQL);
+        session.getCluster().close();
     }
 
     /**
@@ -152,19 +137,16 @@ public class CassandraDbUpdateUtil {
      * @param function
      */
     public static void runWithLock(Function<Void,Void> function){
+        long cost=0;
         while(true){
             //add mutex lock
-            Statement addMutex = QueryBuilder.insertInto(KEYSPACE_MIGRATION,TABLE_MUTEX)
+            //TTL means this mutex lock will auto-released after TTL seconds
+            //in this way, it avoid the lock unrelease due to some program run-time exception
+            Statement addMutex = QueryBuilder.insertInto(KEYSPACE_MIGRATION,TABLE_MUTEX).using(ttl(TTL))
                     .value(PTK,DUMMY)
                     .value(MIGRATION_ID,migration_id)
                     .value(MIGRATION_TS,migration_ts);
             session.execute(addMutex);
-
-            try {
-                Thread.sleep(new Random().nextInt(5000)+200);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
             //query others' mutex lock
             Statement queryMutex = QueryBuilder.select().all().from(KEYSPACE_MIGRATION,TABLE_MUTEX)
@@ -181,6 +163,7 @@ public class CassandraDbUpdateUtil {
                         .and(QueryBuilder.eq(MIGRATION_ID,migration_id))
                         .and(QueryBuilder.eq(MIGRATION_TS,migration_ts));
                 session.execute(delMutex);
+
 
                 break;
             }
@@ -328,6 +311,9 @@ public class CassandraDbUpdateUtil {
                 File schemaFolder = new File(SCHEMA_PATH);
                 File dataFolder = new File(DATA_PATH);
 
+                if(schemaFolder==null || dataFolder==null) return;
+                if(schemaFolder.listFiles()==null || dataFolder.listFiles()==null) return;
+
                 listOfSchemaScripts = Arrays.asList(schemaFolder.listFiles());
                 listOfDataScripts =  Arrays.asList(dataFolder.listFiles());
             }
@@ -472,7 +458,7 @@ public class CassandraDbUpdateUtil {
         //build schema cql string.
         StringBuilder schemaCqlBuilder=new StringBuilder();
         schemaScripts.forEach(f->{
-//            logger.info("schemaScript: "+f.getName());
+            logger.info("schemaScript: "+f.getName());
             try{
                 schemaCqlBuilder.append(IOUtils.toString(new FileInputStream(f)));
             }catch(Exception e){
@@ -483,7 +469,7 @@ public class CassandraDbUpdateUtil {
         //build data cql string
         StringBuilder dataCqlBuilder=new StringBuilder();
         dataScripts.forEach(f->{
-//            logger.info("dataScript: "+f.getName());
+            logger.info("dataScript: "+f.getName());
             try{
                 dataCqlBuilder.append(IOUtils.toString(new FileInputStream(f)));
             }catch(Exception e){
